@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../api.dart';
+import '../theme.dart';
 import 'home_content.dart';
 import 'invest.dart';
 import 'deposit.dart';
@@ -17,31 +17,79 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
 
-  final _pages = [
-    const HomeContent(),
-    const InvestScreen(),
-    const DepositScreen(),
-    const HistoryScreen(),
-    const ProfileScreen(),
-  ];
+  void _go(int i) => setState(() => _index = i);
 
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      HomeContent(
+        onDeposit: () => _go(1),
+        onInvest: () => _go(2),
+        onWithdraw: () => _go(3),
+      ),
+      DepositScreen(onBack: () => _go(0)),
+      InvestScreen(onBack: () => _go(0)),
+      WithdrawScreen(onBack: () => _go(0)),
+      HistoryScreen(),
+      ProfileScreen(),
+    ];
+
     return Scaffold(
-      body: _pages[_index],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _index,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF064E3B),
-        unselectedItemColor: Colors.grey,
-        onTap: (i) => setState(() => _index = i),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Akèy'),
-          BottomNavigationBarItem(icon: Icon(Icons.trending_up), label: 'Envesti'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Depo'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Istwa'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Pwofil'),
-        ],
+      body: IndexedStack(index: _index, children: pages),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: XcColors.line, width: 1)),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0x10000000),
+              blurRadius: 14,
+              offset: Offset(0, -4),
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          currentIndex: _index,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          selectedItemColor: XcColors.emerald,
+          unselectedItemColor: XcColors.muted,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 11),
+          onTap: _go,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Akèy',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle_outline),
+              activeIcon: Icon(Icons.add_circle),
+              label: 'Depo',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.trending_up_outlined),
+              activeIcon: Icon(Icons.trending_up),
+              label: 'Envesti',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance_wallet_outlined),
+              activeIcon: Icon(Icons.account_balance_wallet),
+              label: 'Retrait',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.receipt_long_outlined),
+              activeIcon: Icon(Icons.receipt_long),
+              label: 'Istwa',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Pwofil',
+            ),
+          ],
+        ),
       ),
     );
   }
